@@ -3,6 +3,7 @@ import "./App.css";
 import BudgetForm from "./components/BudgetForm";
 import BudgetTracker from "./components/BudgetTracker";
 import { useBudget } from "./hooks/useBudget";
+import ExpenseModal from "./components/ExpenseModal";
 
 function App() {
   const { state } = useBudget();
@@ -18,6 +19,11 @@ function App() {
       <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg mt-10 p-10">
         {isBudgetValid ? <BudgetTracker /> : <BudgetForm />}
       </div>
+      {isBudgetValid && (
+        <main className="max-w-3xl mx-auto py-10">
+          <ExpenseModal />
+        </main>
+      )}
     </>
   );
 }
