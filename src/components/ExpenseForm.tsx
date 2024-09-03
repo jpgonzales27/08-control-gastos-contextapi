@@ -5,6 +5,7 @@ import "react-date-picker/dist/DatePicker.css";
 import { useState } from "react";
 import { Value } from "../types";
 import { validNumber } from "../utils";
+import ErrorMessage from "./ErrorMessage";
 
 export default function ExpenseForm() {
   const [expense, setExpense] = useState({
@@ -13,6 +14,8 @@ export default function ExpenseForm() {
     category: "",
     date: new Date(),
   });
+
+  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -31,9 +34,22 @@ export default function ExpenseForm() {
     });
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    //validar
+    if (Object.values(expense).includes("")) {
+      setError("Please fill all fields");
+      return;
+    }
+
+    console.log("TODO BIEN...");
+  };
+
   return (
-    <form className="space-y-5">
+    <form className="space-y-5" onSubmit={handleSubmit}>
       <legend>Nuevo Gasto</legend>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
       <div className="flex flex-col gap-2">
         <label htmlFor="expenseName" className="text-xl">
           Nombre Gasto
