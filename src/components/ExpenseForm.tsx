@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Value } from "../types";
 import { validNumber } from "../utils";
 import ErrorMessage from "./ErrorMessage";
+import { useBudget } from "../hooks/useBudget";
 
 export default function ExpenseForm() {
   const [expense, setExpense] = useState({
@@ -16,6 +17,7 @@ export default function ExpenseForm() {
   });
 
   const [error, setError] = useState("");
+  const { dispatch } = useBudget();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -43,7 +45,16 @@ export default function ExpenseForm() {
       return;
     }
 
-    console.log("TODO BIEN...");
+    //Agregar nuevo gasto
+    dispatch({ type: "add-expense", payload: { expense } });
+
+    //reiniciar el state
+    setExpense({
+      amount: 0,
+      expenseName: "",
+      category: "",
+      date: new Date(),
+    });
   };
 
   return (
@@ -101,7 +112,7 @@ export default function ExpenseForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="amount" className="text-xl">
+        <label htmlFor="date" className="text-xl">
           Fecha Gasto:
         </label>
         <DatePicker className="bg-slate-100 p-2 border-0" value={expense.date} onChange={handleChangeDate} />
