@@ -2,14 +2,14 @@ import { categories } from "../data/categories";
 import DatePicker from "react-date-picker";
 import "react-calendar/dist/Calendar.css";
 import "react-date-picker/dist/DatePicker.css";
-import { useState } from "react";
-import { Value } from "../types";
+import { useEffect, useState } from "react";
+import { DraftExpense, Value } from "../types";
 import { validNumber } from "../utils";
 import ErrorMessage from "./ErrorMessage";
 import { useBudget } from "../hooks/useBudget";
 
 export default function ExpenseForm() {
-  const [expense, setExpense] = useState({
+  const [expense, setExpense] = useState<DraftExpense>({
     amount: 0,
     expenseName: "",
     category: "",
@@ -17,7 +17,14 @@ export default function ExpenseForm() {
   });
 
   const [error, setError] = useState("");
-  const { dispatch } = useBudget();
+  const { dispatch, state } = useBudget();
+
+  useEffect(() => {
+    if (state.editingId) {
+      const editingExpense = state.expenses.filter((currentExpense) => currentExpense.id === state.editingId)[0];
+      setExpense(editingExpense);
+    }
+  }, [state.editingId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -45,8 +52,12 @@ export default function ExpenseForm() {
       return;
     }
 
-    //Agregar nuevo gasto
-    dispatch({ type: "add-expense", payload: { expense } });
+    //Agregar o actualizar el gasto
+    if (state.editingId) {
+      dispatch({ type: "update-expense", payload: { expense: { id: state.editingId, ...expense } } });
+    } else {
+      dispatch({ type: "add-expense", payload: { expense } });
+    }
 
     //reiniciar el state
     setExpense({

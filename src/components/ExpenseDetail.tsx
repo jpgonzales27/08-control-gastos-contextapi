@@ -17,17 +17,14 @@ export default function ExpenseDetail({ expense }: ExpenseDetailProps) {
 
   const leadingActions = () => (
     <LeadingActions>
-      <SwipeAction onClick={() => {}}>Actualizar</SwipeAction>
+      <SwipeAction onClick={() => dispatch({ type: "editing-itme-by-id", payload: { id: expense.id } })}>
+        Actualizar
+      </SwipeAction>
     </LeadingActions>
   );
   const trailingActions = () => (
     <TrailingActions>
-      <SwipeAction
-        onClick={() => {
-          dispatch({ type: "remove-expense", payload: { id: expense.id } });
-        }}
-        destructive={true}
-      >
+      <SwipeAction onClick={() => dispatch({ type: "remove-expense", payload: { id: expense.id } })} destructive={true}>
         Eliminar
       </SwipeAction>
     </TrailingActions>
