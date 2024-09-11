@@ -23,8 +23,8 @@ const initialBudget = (): number => {
 };
 
 const localStorageExpenses = (): Expense[] => {
-  const localStorageExpense = localStorage.getItem("expenses");
-  return localStorageExpense ? JSON.parse(localStorageExpense) : [];
+  const localStorageExpenses = localStorage.getItem("expenses");
+  return localStorageExpenses ? JSON.parse(localStorageExpenses) : [];
 };
 
 export const initialState: BudgetState = {

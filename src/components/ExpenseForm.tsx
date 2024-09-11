@@ -17,12 +17,14 @@ export default function ExpenseForm() {
   });
 
   const [error, setError] = useState("");
-  const { dispatch, state } = useBudget();
+  const [previousAmount, setPreviousAmount] = useState(0);
+  const { dispatch, state, remainingBudget } = useBudget();
 
   useEffect(() => {
     if (state.editingId) {
       const editingExpense = state.expenses.filter((currentExpense) => currentExpense.id === state.editingId)[0];
       setExpense(editingExpense);
+      setPreviousAmount(editingExpense.amount);
     }
   }, [state.editingId]);
 
@@ -32,7 +34,7 @@ export default function ExpenseForm() {
 
     setExpense({
       ...expense,
-      [name]: isAmountField ? validNumber(value) : value,
+      [name]: isAmountField ? Number(validNumber(value)) : value,
     });
   };
 
@@ -52,6 +54,12 @@ export default function ExpenseForm() {
       return;
     }
 
+    //Vañodar que no se pase del limite
+    if (expense.amount - previousAmount > remainingBudget) {
+      setError("You can't spend more than your remaining budget");
+      return;
+    }
+
     //Agregar o actualizar el gasto
     if (state.editingId) {
       dispatch({ type: "update-expense", payload: { expense: { id: state.editingId, ...expense } } });
@@ -66,6 +74,7 @@ export default function ExpenseForm() {
       category: "",
       date: new Date(),
     });
+    setPreviousAmount(0);
   };
 
   return (
